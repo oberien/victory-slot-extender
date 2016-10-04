@@ -19,12 +19,11 @@ fn main() {
     line = line.to_lowercase();
     let upload = line != "n" && line != "no";
 
-    let mut path = if cfg!(windows) {
-        PathBuf::from("%localappdata%")
+    let mut path = std::env::home_dir().unwrap();
+    if cfg!(windows) {
+        path.push("Appdata"); path.push("Local");
     } else {
-        let mut path = std::env::home_dir().unwrap();
         path.push(".config"); path.push("Epic");
-        path
     };
     path.push("Victory"); path.push("Saved");
     path.push("SaveGames"); path.push("ChracterSlotSave.9.sav");
