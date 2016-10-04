@@ -1,0 +1,6 @@
+[package]
+name = "victory-slot-extender"
+version = "0.1.0"
+authors = ["oberien <jaro.fietz@gmx.de>"]
+
+[dependencies]
