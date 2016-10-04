@@ -16,7 +16,7 @@ fn main() {
     let mut line = String::new();
     stdin().read_line(&mut line).expect("Could not read");
     assert_eq!(line.pop().unwrap(), '\n');
-    line = line.to_lowercase();
+    line = line.trim().to_lowercase();
     let upload = line != "n" && line != "no";
 
     let mut path = std::env::home_dir().unwrap();
