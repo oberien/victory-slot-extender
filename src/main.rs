@@ -11,14 +11,6 @@ fn main() {
     assert_eq!(line.pop().unwrap(), '\n');
     let number = line.trim().parse::<u32>().expect("Input was not a number");
 
-    print!("Can we upload your Character file for debugging purposes?[Y/n] ");
-    stdout().flush().unwrap();
-    let mut line = String::new();
-    stdin().read_line(&mut line).expect("Could not read");
-    assert_eq!(line.pop().unwrap(), '\n');
-    line = line.trim().to_lowercase();
-    let upload = line != "n" && line != "no";
-
     let mut path = std::env::home_dir().unwrap();
     if cfg!(windows) {
         path.push("Appdata"); path.push("Local");
@@ -26,7 +18,7 @@ fn main() {
         path.push(".config"); path.push("Epic");
     };
     path.push("Victory"); path.push("Saved");
-    path.push("SaveGames"); path.push("ChracterSlotSave.9.sav");
+    path.push("SaveGames"); path.push("ChracterSlotSave.7.sav");
 
     println!("Using file {}", path.display());
     // create backup file
@@ -45,8 +37,8 @@ fn main() {
     println!("Checking file...");
     // check header
     assert_eq!(&buf[..4], "GVAS".as_bytes());
-    assert_eq!(&buf[26..46], "++RedHarvest+Staging".as_bytes());
-    assert_eq!(&buf[51..73], "LocalCharacterSlotSave".as_bytes());
+    assert_eq!(&buf[26..48], b"++depot+UE4-Releases+4");
+    assert_eq!(&buf[56..78], b"LocalCharacterSlotSave");
     let to_seek = b"\x0f\x00\x00\x00CharacterSlots\x00\x0e\x00\x00\x00ArrayProperty\x00";
     let pos = buf.windows(to_seek.len()).position(|a| a == &to_seek[..])
         .expect("Can not find correct position");
@@ -63,12 +55,5 @@ fn main() {
         file.write(&buf[..]).expect("Error writing file");
     }
     println!("Slots successfully added");
-    if upload {
-        println!("Uploading file...");
-        let mut conn = TcpStream::connect("novalis.oberien.de:13371").expect("Could not connect to server");
-        //let mut conn = TcpStream::connect("127.0.0.1:13371").expect("Could not connect to server");
-        let _ = conn.write(&bck[..]);
-        println!("File uploaded. Thank you for your support.");
-    }
 }
 
